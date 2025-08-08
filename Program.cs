@@ -1,37 +1,75 @@
-﻿namespace Assignment_2;
+namespace Assignment_2;
 
 class Program
 {
+    // Declare filename for videogame data and get list from existing file
     static string FileName = "VideoGames.txt";
     static List<Game> VideoGames = GetGameList();
 
-    static void Main()
+    static void Main() // Main menu logic 
     {
-        //Show all of the current games.
-        for (int i = 0; i < VideoGames.Count; i++)
+        string? input;
+        do
         {
-            Console.WriteLine(VideoGames[i].ListGame());
-        }
+            Console.WriteLine("\n====== Video Game Inventory Menu ======");
+            Console.WriteLine();
+            Console.WriteLine("1. Show All Games");
+            Console.WriteLine("2. Add New Game");
+            Console.WriteLine("3. Search by Item Number");
+            Console.WriteLine("4. Search by Maximum Price");
+            Console.WriteLine("5. Perform Price Analysis");
+            Console.WriteLine("6. Exit");
+            Console.WriteLine();
+            Console.Write("Enter your choice: ");
 
-        //Add a new game.
-        AddGame();
+            input = Console.ReadLine();
 
-        //Search for games by item number.
-        FindGameByItemNumber();
+            if (input == "1")
+            {
+                Console.Clear();
+                Console.WriteLine("\n====== ALL GAMES ======");
+                Console.WriteLine();
+                foreach (var game in VideoGames)
+                    Console.WriteLine(game.ListGame());
+                Console.WriteLine();
+                Console.Write("Press any key to go back to Main menu ");
+                Console.ReadLine();
+                Console.Clear();
+                
+            }
+            else if (input == "2")
+            {
+                AddGame();
+            }
+            else if (input == "3")
+            {
+                FindGameByItemNumber();
+            }
+            else if (input == "4")
+            {
+                FindGameByMaximumPrice();
+            }
+            else if (input == "5")
+            {
+                PerformStatisticalAnalysis();
+            }
+            else if (input != "6")
+            {
+                Console.WriteLine("Invalid choice, please try again.");
+            }
 
-        //Search for games by maximum price.
-        FindGameByMaximumPrice();
+        } while (input != "6");
 
-        //Perform statistical analysis of the price of the items in stock.
-        PerformStatisticalAnalysis();
+        Console.WriteLine("Goodbye!");
     }
-
+    // Function to get game list from file
     static List<Game> GetGameList()
     {
         List<Game> videoGames = new List<Game>();
         try
         {
             StreamReader videoGamesFile = new StreamReader(FileName);
+            // Iterate through lines in file to map games to game objects
             string? gameString = videoGamesFile.ReadLine();
             while (gameString != null)
             {
@@ -53,7 +91,8 @@ class Program
         }
         return videoGames;
     }
-
+    
+    // Function to get list of item numbers for all games
     static List<int> GetItemNumbers()
     {
         List<int> itemNumbers = new List<int>();
@@ -64,10 +103,21 @@ class Program
         return itemNumbers;
     }
 
+    // Function to prompt user for new game info and add game to file and list
     static void AddGame()
     {
+        // Determine item number to use, provided by user or first unique number starting at 1000
         int itemNumber = 0;
-        Console.WriteLine("Please enter an item number or leave blank to generate one");
+        Console.Clear();
+        Console.WriteLine("\n====== Add New Game ======");
+        Console.WriteLine();
+        Console.WriteLine("Please create a 4 digit item number");
+        Console.WriteLine();
+        Console.WriteLine("OR");
+        Console.WriteLine();
+        Console.WriteLine("Leave blank to auto generate a number");
+        Console.WriteLine();
+        Console.Write("Item Number: ");
         string? input = Console.ReadLine();
         while (itemNumber == 0)
         {
@@ -80,21 +130,29 @@ class Program
                     itemNumber++;
                 }
             }
+            // Input validation
             else if (!Int32.TryParse(input, out itemNumber) || itemNumber < 1 || itemNumber > 9999)
             {
                 Console.WriteLine("Invalid input, please enter a number between 1 and 9999");
                 input = Console.ReadLine();
                 itemNumber = 0;
             }
-            else if (itemNumbers.Contains(Convert.ToInt32(input)))
+            else if (itemNumbers.Contains(itemNumber))
             {
                 Console.WriteLine("Item number already exists, please enter another item number");
                 input = Console.ReadLine();
                 itemNumber = 0;
             }
         }
-
+        Console.Clear();
+        
+        // Prompts for game name, price, rating and quantity with input validation
+        Console.WriteLine("\n====== Add New Game ======");
+        Console.WriteLine();
         Console.WriteLine("Please enter the game name");
+        Console.WriteLine();
+        Console.Write("Name: ");
+        
         string? itemName = Console.ReadLine();
         while (String.IsNullOrEmpty(itemName))
         {
@@ -103,7 +161,12 @@ class Program
         }
 
         int price;
+        Console.Clear();
+        Console.WriteLine("\n====== Add New Game ======");
+        Console.WriteLine();
         Console.WriteLine("Please enter the game price");
+        Console.WriteLine();
+        Console.Write("Price: ");
         input = Console.ReadLine();
         while (!Int32.TryParse(input, out price) || price < 1)
         {
@@ -112,7 +175,12 @@ class Program
         }
 
         int userRating;
+        Console.Clear();
+        Console.WriteLine("\n====== Add New Game ======");
+        Console.WriteLine();
         Console.WriteLine("Please enter the game rating (1-5)");
+        Console.WriteLine();
+        Console.Write("rating: ");
         input = Console.ReadLine();
         while (!Int32.TryParse(input, out userRating) || userRating < 1 || userRating > 5)
         {
@@ -121,8 +189,14 @@ class Program
         }
 
         int quantity;
+        Console.Clear();
+        Console.WriteLine("\n====== Add New Game ======");
+        Console.WriteLine();
         Console.WriteLine("Please enter the quantity in stock");
+        Console.WriteLine();
+        Console.Write("Stock: ");
         input = Console.ReadLine();
+        Console.Clear();
         while (!Int32.TryParse(input, out quantity) || quantity < 1)
         {
             Console.WriteLine("Invalid input, please enter a positive integer for the quantity");
@@ -144,7 +218,12 @@ class Program
     static void FindGameByItemNumber()
     {
         //Prompt the user to enter an item number.
+        Console.Clear();
+        Console.WriteLine("\n====== Search by Item Number ======");
+        Console.WriteLine();
         Console.WriteLine("Please enter the item number of the game you are looking for: ");
+        Console.WriteLine();
+        Console.Write("Number: ");
         //Read user input from the console. A nullable string is returned, meaning it may return null if no input is received.
         string? input = Console.ReadLine();
 
@@ -162,7 +241,7 @@ class Program
         //Loop through all of the games in the inventory.
         for (int i = 0; i < VideoGames.Count; i++)
         {
-            //Obtain the current game.
+            //Obtain the game at the current index in the array or list.
             Game currentGame = VideoGames[i];
 
             //Check if the current game's item number matches the item number entered by the user.
@@ -175,13 +254,31 @@ class Program
         //If a matching game was found, display its details.
         if (foundGame != null)
         {
-            Console.WriteLine("Game found!: ");
+            Console.Clear();
+            Console.WriteLine("\n====== Search by Item Number ======");
+            Console.WriteLine();
+            Console.WriteLine("Game found!");
+            Console.WriteLine();
             Console.WriteLine(foundGame.ListGame()); //Print the game's information.
+            Console.WriteLine();
+            Console.Write("Press any key to go back to Main menu ");
+            Console.ReadLine();
+            Console.Clear();
+            
         }
         else
         {
-            //If no game was found, inform the user.
+            //If no game was found, inform the user of this.
+            Console.Clear();
+            Console.WriteLine("\n====== Search by Item Number ======");
+            Console.WriteLine();
             Console.WriteLine($"No game has been found with the item number {searchItemNumber}.");
+            Console.WriteLine();
+            Console.Write("Press any key to go back to main menu ");
+            Console.ReadLine();
+            Console.Clear();
+            
+            
         }
     }
 
@@ -189,9 +286,15 @@ class Program
     static void FindGameByMaximumPrice()
     {
         //Prompt the user to enter a maximum price.
+        Console.Clear();
+        Console.WriteLine("\n====== Search by max price ======");
+        Console.WriteLine();
         Console.WriteLine("Please enter the maximum price to search for: ");
+        Console.WriteLine();
+        Console.Write("Price: ");
         //Read user input from the console. A nullable string is returned, meaning it may return null if no input is received.
         string? input = Console.ReadLine();
+        Console.Clear();
 
         //Attempt converting the input to an integer (maximum price).
         if (!int.TryParse(input, out int maxPrice) || maxPrice < 0)
@@ -206,19 +309,41 @@ class Program
         //Loop through all of the games present in the inventory.
         for (int i = 0; i < VideoGames.Count; i++)
         {
-            Game game = VideoGames[i];
+            Console.Clear();
+            Console.WriteLine("\n====== Search by max price ======");
+            Console.WriteLine();
+            Game game = VideoGames[i]; //Obtain the game at the current index in the array or list.
+            Console.WriteLine();
+            Console.Write("Press any key to go back to main menu ");
+            Console.ReadLine();
+            Console.Clear();
+            
 
             //If the game's price is less than or equal to the entered max price.
             if (game.GetPrice() <= maxPrice)
             {
+                Console.Clear();
+                Console.WriteLine("\n====== Search by max price ======");
+                Console.WriteLine();
                 Console.WriteLine(game.ListGame()); //Display the game to the user.
-                gameFound = true;
+                gameFound = true; //Variable to indicate that a matching game has been found.
+                Console.WriteLine();
+                Console.Write("Press any key to go back to main menu ");
+                Console.ReadLine();
+                Console.Clear();
             }
         }
         //If no matching games were found, inform the user of this.
         if (!gameFound)
         {
+            Console.Clear();
+            Console.WriteLine("\n====== Search by max price ======");
+            Console.WriteLine();
             Console.WriteLine($"No games were found with the price equal to or less than ${maxPrice}.");
+            Console.WriteLine();
+            Console.Write("Press any key to go back to main menu ");
+            Console.ReadLine();
+            Console.Clear();
         }
     }
 
@@ -229,7 +354,7 @@ class Program
         if (VideoGames.Count == 0)
         {
             //If so, display an error message and exit the method.
-            Console.WriteLine("There are no games in the inventory to analayze!");
+            Console.WriteLine("There are no games in the inventory to analyze!");
             return;
         }
 
@@ -267,13 +392,20 @@ class Program
         int priceRange = maximumPrice - minimumPrice;
 
         //Display the calculated statistics to the user.
-        Console.WriteLine("\n----- Price Statistics: -----");
+        Console.Clear();
+        Console.WriteLine("\n====== Price Statistics ======");
+        Console.WriteLine();
         Console.WriteLine($"Mean Price: ${meanPrice:F2}"); //Show the average price rounded to two decimal places.
         Console.WriteLine($"Price Range: ${priceRange}"); //Show the difference between the highest priced game and the lowest price game.
         Console.WriteLine($"Highest Price: ${highestPriceGame.GetItemName()} - ${maximumPrice}"); //Show the game with the highest price.
         Console.WriteLine($"Lowest Price: ${lowestPriceGame.GetItemName()} - ${minimumPrice}"); //Show the game with the lowest price.
+        Console.WriteLine();
+        Console.Write("Press any key to go back to main menu ");
+        Console.ReadLine();
+        Console.Clear();
     }
 
+    // Create video game class
     internal class Game
     {
         private int ItemNumber;
@@ -281,7 +413,8 @@ class Program
         private int Price;
         private int UserRating;
         private int Quantity;
-
+        
+        // Constructor
         public Game(int itemNumber, string itemName, int price, int userRating, int quantity)
         {
             ItemNumber = itemNumber;
@@ -291,15 +424,18 @@ class Program
             Quantity = quantity;
         }
 
+        // Get data for video game to add to file
         public override string ToString()
         {
             return ItemNumber + "," + ItemName + "," + Price + "," + UserRating + "," + Quantity;
         }
+        // Get data for video game in human readable form
         public string ListGame()
         {
             return ItemNumber + ": " + ItemName + " - $" + Price + ", " + UserRating + " Stars, " + Quantity + " In Stock";
         }
 
+        // Get values from each variable
         public int GetItemNumber()
         {
             return ItemNumber;
