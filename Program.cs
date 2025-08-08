@@ -259,7 +259,7 @@ class Program
             Console.WriteLine();
             Console.WriteLine("Game found!");
             Console.WriteLine();
-            Console.WriteLine(foundGame.ListGame()); //Print the game's information.
+            Console.WriteLine(foundGame.ListGame()); //Display the game's information.
             Console.WriteLine();
             Console.Write("Press any key to go back to Main menu ");
             Console.ReadLine();
@@ -458,3 +458,4 @@ class Program
         }
     }
 }
+
